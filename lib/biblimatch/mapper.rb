@@ -14,6 +14,7 @@ module Biblimatch
         :publication => :TA,
         :title => :TI,
         :year => :YR,
+        :pages => :PG,
       },
       hippocampome: {
         :pmid_isbn => :pmid_isbn,
@@ -21,7 +22,9 @@ module Biblimatch
         :publication => :publication,
         :title => :title,
         :year => :year,
-        :page => :page,
+        :pages => lambda { |pages|
+          [:first_page, :last_page].zip(Biblimatch.parse_pages(pages))
+        },
         :first_page => :first_page,
         :last_page => :last_page,
       }
@@ -46,7 +49,9 @@ module Biblimatch
       set_out_hash
       set_in_hash
       create_field_mapping
-      execute_mapping
+      create_pairs
+      expand_lambdas
+      create_hash
     end
 
     def set_out_hash
@@ -88,8 +93,6 @@ module Biblimatch
         standard_key
       end
       @standard_keys = standard_keys.compact
-    rescue StandardError => e
-      binding.pry
     end
 
     def remove_unmapped_fields_from_data
@@ -109,10 +112,25 @@ module Biblimatch
       @field_mapping = Hash[ keys.zip(values) ]
     end
 
-    def execute_mapping
+    def create_pairs
       keys = @field_mapping.values_at(*@data.keys)
       values = @data.values
-      Hash[ keys.zip(values) ]
+      @pairs = keys.zip(values)
+    end
+
+    def expand_lambdas
+      @pairs.map! do |key, value|
+        if key.is_a? Proc
+          key.call(value)  # returns new pairs
+        else
+          [key, value]
+        end
+      end
+    end
+
+    def create_hash
+      @pairs.flatten!
+      Hash[ @pairs ]
     end
 
   end
