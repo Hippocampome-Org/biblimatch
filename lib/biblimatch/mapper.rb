@@ -88,6 +88,8 @@ module Biblimatch
         standard_key
       end
       @standard_keys = standard_keys.compact
+    rescue StandardError => e
+      binding.pry
     end
 
     def remove_unmapped_fields_from_data

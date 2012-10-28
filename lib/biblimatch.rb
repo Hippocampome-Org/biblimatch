@@ -1,4 +1,5 @@
 require "biblimatch/version"
+require "biblimatch/exceptions"
 require "biblimatch/matcher"
 require "biblimatch/mapper"
 require "biblimatch/pubmed_matcher"
