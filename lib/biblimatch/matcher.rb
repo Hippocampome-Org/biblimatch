@@ -18,7 +18,11 @@ module Biblimatch
     def match
       klass = get_matcher_class
       @output_data = klass.new(@data).match
-      Mapper.new(@output_data, @target_database).map if @target_database
+      if @output_database
+        Mapper.new(@output_data, @output_database, @target_database).map 
+      else
+        @output_data
+      end
     end
 
     def get_matcher_class

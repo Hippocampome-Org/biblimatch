@@ -22,14 +22,14 @@ module Biblimatch
   end
 
   def self.parse_pages(page_range)
-    page_range =~ /(\d+)-(\d+)/ 
+    page_range =~ /(\d+)\s*-\s*(\d+)/ 
     if $1 and $2
       diff = $1.size - $2.size
       first_page, last_page = $1, $2
       last_page = first_page[0...diff] + last_page if diff > 0  # get full end page
       return first_page, last_page
     else
-      return pg
+      return page_range
     end
   end
 

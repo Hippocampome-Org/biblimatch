@@ -13,20 +13,35 @@ module Biblimatch
         :authors => :AU,
         :publication => :TA,
         :title => :TI,
-        :year => :YR,
+        :year => :DP,
         :pages => :PG,
+        :volume => :VI,
+        :doi => :DOI,  # this does NOT WORK going in; added in my medline record class
+        :abstract => :AB
       },
       hippocampome: {
         :pmid_isbn => :pmid_isbn,
-        :authors => :authors,
+        :authors => lambda { |authors|
+          [:authors, authors.gsub(/\n/, ', ')]
+        },
         :publication => :publication,
         :title => :title,
         :year => :year,
         :pages => lambda { |pages|
-          [:first_page, :last_page].zip(Biblimatch.parse_pages(pages))
+          first_page, last_page = Biblimatch.parse_pages(pages)
+          [:first_page, :last_page].zip([first_page, last_page])
         },
         :first_page => :first_page,
         :last_page => :last_page,
+        :volume => :volume,
+        :doi => :doi
+      },
+      nmo: {
+        :pmid_isbn => :pmid,
+        :title => :article_title,
+        :authors => :author,
+        :abstract => :article_abstract,
+        :url => :article_URL
       }
     }
 
@@ -36,6 +51,9 @@ module Biblimatch
       :publication => [:journal],
       :title => [],
       :year => [:date],
+      :pages => [],
+      :volume => [],
+      :doi => [],
     }
 
     def initialize(data, data_target, data_source=nil)
@@ -62,15 +80,14 @@ module Biblimatch
       if @data_source
         @in_hash = self.class.field_mapping[@data_source].invert
       else
-        @data_source = :standard
         build_in_hash_to_standard
       end
+      remove_unmapped_fields_from_in_hash
     end
 
     def build_in_hash_to_standard  # get mapping of field names to standard names
       build_field_name_hash
       get_standard_keys
-      remove_unmapped_fields_from_data
       @in_hash = Hash[ @data.keys.zip(@standard_keys) ]
     end
 
@@ -88,15 +105,13 @@ module Biblimatch
 
     def get_standard_keys
       standard_keys = @data.keys.map do |field|
-        standard_key = look_up_key(field)
-        @unmapped_fields << field if not standard_key
-        standard_key
+        look_up_key(field)
       end
-      @standard_keys = standard_keys.compact
+      @standard_keys = standard_keys
     end
 
-    def remove_unmapped_fields_from_data
-      @unmapped_fields.each { |field| @data.delete(field) }
+    def remove_unmapped_fields_from_in_hash
+      @in_hash.reject! { |field, value| field.nil? or value.nil? }
     end
 
     def look_up_key(key)
@@ -115,7 +130,8 @@ module Biblimatch
     def create_pairs
       keys = @field_mapping.values_at(*@data.keys)
       values = @data.values
-      @pairs = keys.zip(values)
+      pairs = keys.zip(values)
+      @pairs = pairs.reject { |field, value| field.nil? }
     end
 
     def expand_lambdas
@@ -130,7 +146,7 @@ module Biblimatch
 
     def create_hash
       @pairs.flatten!
-      Hash[ @pairs ]
+      Hash[ *@pairs ]
     end
 
   end
