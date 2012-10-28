@@ -72,35 +72,54 @@ module Biblimatch
 
         context "sourced" do
 
-          let(:mapper) { Mapper.new(data, :hippocampome, :pubmed) }
-          let(:output) { mapper.map }
+          context "to hippocampome" do
 
-          it "maps PMID to hippocampome correctly" do 
-            output[:pmid_isbn].should eq(data[:PMID])
+            let(:mapper) { Mapper.new(data, :hippocampome, :pubmed) }
+            let(:output) { mapper.map }
+
+            it "maps PMID to hippocampome correctly" do 
+              output[:pmid_isbn].should eq(data[:PMID])
+            end
+
+            it "maps AU to hippocampome correctly" do 
+              output[:authors].should eq(data[:AU])
+            end
+
+            it "maps TA to hippocampome correctly" do 
+              output[:publication].should eq(data[:TA])
+            end
+
+            it "maps TI to hippocampome correctly" do 
+              output[:title].should eq(data[:TI])
+            end
+
+            it "maps DP to hippocampome correctly" do 
+              output[:year].should eq(data[:DP])
+            end
+
           end
 
-          it "maps AU to hippocampome correctly" do 
-            output[:authors].should eq(data[:AU])
-          end
+          context "to nmo" do
 
-          it "maps TA to hippocampome correctly" do 
-            output[:publication].should eq(data[:TA])
-          end
+            let(:mapper) { Mapper.new(data, :nmo, :pubmed) }
+            let(:output) { mapper.map }
 
-          it "maps TI to hippocampome correctly" do 
-            output[:title].should eq(data[:TI])
-          end
+            it "maps PMID to nmo correctly" do 
+              output[:pmid].should eq(data[:PMID])
+            end
 
-          it "maps DP to hippocampome correctly" do 
-            output[:year].should eq(data[:DP])
-          end
+            it "maps AU to nmo correctly" do 
+              output[:author].should eq(data[:AU])
+            end
 
-          it "maps PG to hippocampome first_page correctly" do
-            output[:first_page].should eql("14670")
-          end
+            it "maps TI to nmo correctly" do 
+              output[:article_title].should eq(data[:TI])
+            end
 
-          it "maps PG to hippocampome last_page correctly" do
-            output[:last_page].should eql("14684")
+            it "maps AB to nmo correctly" do
+              output[:article_abstract].should eq(data[:AB])
+            end
+
           end
 
         end

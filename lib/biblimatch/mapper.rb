@@ -17,7 +17,7 @@ module Biblimatch
         :pages => :PG,
         :volume => :VI,
         :doi => :DOI,  # this does NOT WORK going in; added in my medline record class
-        :abstract => :AB
+        :abstract => :AB,
       },
       hippocampome: {
         :pmid_isbn => :pmid_isbn,
