@@ -16,6 +16,7 @@ module Biblimatch
         :year => :DP,
         :pages => :PG,
         :volume => :VI,
+        :issue => :IP,
         :doi => :DOI,  # this does NOT WORK going in; added in my medline record class
         :abstract => :AB,
       },
@@ -34,14 +35,17 @@ module Biblimatch
         :first_page => :first_page,
         :last_page => :last_page,
         :volume => :volume,
-        :doi => :doi
+        :issue => :issue,
+        :doi => :doi,
+        :page => :page
       },
       nmo: {
         :pmid_isbn => :pmid,
         :title => :article_title,
         :authors => :author,
         :abstract => :article_abstract,
-        :url => :article_URL
+        :url => :article_URL,
+        :year => :year
       }
     }
 
