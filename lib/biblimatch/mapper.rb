@@ -46,7 +46,19 @@ module Biblimatch
         :abstract => :article_abstract,
         :url => :article_URL,
         :year => :year
-      }
+      },
+      standard: {
+        :pmid_isbn => :pmid_isbn,
+        :authors => :authors,
+        :publication => :publication,
+        :title => :title,
+        :year => :year,
+        :pages => :pages,
+        :volume => :volume,
+        :issue => :issue,
+        :doi => :doi,  # this does NOT WORK going in; added in my medline record class
+        :abstract => :abstract,
+      },
     }
 
     @alternate_field_name_hash = {

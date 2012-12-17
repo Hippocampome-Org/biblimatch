@@ -6,6 +6,7 @@ require "biblimatch/pubmed_matcher"
 require "biblimatch/hippocampome_matcher"
 require "biblimatch/medline_record"
 require "biblimatch/author"
+require "biblimatch/citer"
 
 require "extensions/rb-readline"
 require "extensions/string"
