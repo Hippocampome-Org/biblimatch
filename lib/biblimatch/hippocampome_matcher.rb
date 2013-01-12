@@ -3,7 +3,7 @@ module Biblimatch
   class HippocampomeMatcher
 
     def initialize(data, opts={})
-      require_files
+      #require_files
       check_db_connection_defined
       check_article_model_defined
       @data = data
@@ -12,19 +12,21 @@ module Biblimatch
 
     def require_files
       require 'sequel'
-      require '/Users/seanmackesey/Desktop/hippocampome/config'
-      require '/Users/seanmackesey/Desktop/hippocampome/db/db_connection'
-      require '/Users/seanmackesey/Desktop/hippocampome/db/models'
+      require File.expand_path('config', HIPPOCAMPOME_DIRECTORY)
+      require File.expand_path('db/db_connection', HIPPOCAMPOME_DIRECTORY)
+      require File.expand_path('db/models', HIPPOCAMPOME_DIRECTORY)
     end
 
     def match
+      #binding.pry
       if @data[:pmid_isbn].to_s.length >= 13  # is an ISBN
         @article = match_book
       else
         @article = match_article
       end
       check_for_match
-      @article.values
+      add_authors
+      @article
     end
 
     def match_book
@@ -43,6 +45,11 @@ module Biblimatch
 
     def match_article
       Article[@data]
+    end
+
+    def add_authors
+      authors = @article.authors.map{|au| au.name}.join(', ')
+      @article = @article.values.merge(authors: authors)
     end
 
     def check_db_connection_defined
