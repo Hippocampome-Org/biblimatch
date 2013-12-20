@@ -8,7 +8,7 @@ require "biblimatch/medline_record"
 require "biblimatch/author"
 require "biblimatch/citer"
 
-require "extensions/rb-readline"
+# require "extensions/rb-readline"
 require "extensions/string"
 
 module Biblimatch

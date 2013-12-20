@@ -1,4 +1,4 @@
-require 'extensions/rb-readline'
+# require 'extensions/rb-readline'
 require 'highline'
 require 'bio'
 
@@ -84,8 +84,9 @@ module Biblimatch
 
     def refine_query(query)
       puts "\nEnter an extension to the query or return to exit: "
-      RbReadline.prefill_prompt(query)
-      @query = Readline.readline("Query: ", true)
+      # RbReadline.prefill_prompt(query)
+      # @query = Readline.readline("Query: ", true)
+      @query = HighLine.new.ask("Query: ")
     end      
 
   end

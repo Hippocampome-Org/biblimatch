@@ -17,6 +17,5 @@ Gem::Specification.new do |gem|
 
   gem.add_runtime_dependency 'highline'
   gem.add_runtime_dependency 'bio'
-  gem.add_runtime_dependency 'rb-readline'
 
 end
